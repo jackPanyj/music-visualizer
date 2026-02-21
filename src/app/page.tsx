@@ -64,7 +64,7 @@ function ModeSelector({
           display: "flex",
           alignItems: "center",
           gap: 8,
-          padding: isMobile ? "10px 12px" : "8px 14px",
+          padding: isMobile ? "12px 12px" : "8px 14px",
           borderRadius: 10,
           background: "rgba(0,0,0,0.5)",
           backdropFilter: "blur(20px)",
@@ -204,8 +204,8 @@ function MiniPlayer({
         left: 0,
         right: 0,
         zIndex: 20,
-        padding: "0 12px 12px",
-        paddingBottom: "calc(12px + env(safe-area-inset-bottom, 0px))",
+        padding: "0 10px",
+        paddingBottom: "max(10px, env(safe-area-inset-bottom, 10px))",
       }}
     >
       <div
@@ -213,12 +213,12 @@ function MiniPlayer({
           display: "flex",
           alignItems: "center",
           gap: 12,
-          padding: "12px 16px",
-          borderRadius: 14,
-          background: "rgba(10,10,20,0.8)",
+          padding: "10px 14px",
+          borderRadius: 16,
+          background: "rgba(10,10,20,0.85)",
           backdropFilter: "blur(30px)",
           border: "1px solid rgba(255,255,255,0.06)",
-          boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.5)",
         }}
       >
         {/* Animated bars */}
@@ -260,17 +260,16 @@ function MiniPlayer({
           {fileName}
         </div>
 
-        {/* Open sidebar */}
+        {/* Open sidebar — 44px touch target */}
         <button
           onClick={onMenuOpen}
           style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
+            width: 44,
+            height: 44,
+            borderRadius: 10,
             background: "rgba(255,255,255,0.06)",
             border: "1px solid rgba(255,255,255,0.08)",
             color: "rgba(255,255,255,0.6)",
-            fontSize: 14,
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -279,8 +278,8 @@ function MiniPlayer({
           }}
         >
           <svg
-            width="16"
-            height="16"
+            width="18"
+            height="18"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -311,8 +310,8 @@ function MenuButton({
         top: 12,
         left: 12,
         zIndex: 20,
-        width: 40,
-        height: 40,
+        width: 44,
+        height: 44,
         borderRadius: 10,
         background: "rgba(0,0,0,0.5)",
         backdropFilter: "blur(20px)",
@@ -470,7 +469,8 @@ export default function Home() {
             right: isMobile ? 12 : 16,
             zIndex: 20,
             display: "flex",
-            alignItems: "center",
+            flexDirection: isMobile ? "column" : "row",
+            alignItems: isMobile ? "flex-end" : "center",
             gap: 8,
           }}
         >
@@ -481,7 +481,10 @@ export default function Home() {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              padding: isMobile ? "10px 10px" : "8px 10px",
+              padding: isMobile ? "0" : "8px 10px",
+              width: isMobile ? 40 : "auto",
+              height: isMobile ? 40 : "auto",
+              justifyContent: "center",
               borderRadius: 10,
               background: "rgba(0,0,0,0.5)",
               backdropFilter: "blur(20px)",
@@ -500,32 +503,34 @@ export default function Home() {
               <polyline points="4 17 10 11 4 5" />
               <line x1="12" y1="19" x2="20" y2="19" />
             </svg>
-            {/* Switch track */}
-            <div
-              style={{
-                width: 28,
-                height: 16,
-                borderRadius: 8,
-                background: matrixOn ? theme.accent + "44" : "rgba(255,255,255,0.1)",
-                position: "relative",
-                transition: "background 0.25s ease",
-                flexShrink: 0,
-              }}
-            >
+            {/* Switch track — desktop only */}
+            {!isMobile && (
               <div
                 style={{
-                  width: 12,
-                  height: 12,
-                  borderRadius: 6,
-                  background: matrixOn ? theme.accent : "rgba(255,255,255,0.35)",
-                  position: "absolute",
-                  top: 2,
-                  left: matrixOn ? 14 : 2,
-                  transition: "all 0.25s ease",
-                  boxShadow: matrixOn ? `0 0 6px ${theme.accent}` : "none",
+                  width: 28,
+                  height: 16,
+                  borderRadius: 8,
+                  background: matrixOn ? theme.accent + "44" : "rgba(255,255,255,0.1)",
+                  position: "relative",
+                  transition: "background 0.25s ease",
+                  flexShrink: 0,
                 }}
-              />
-            </div>
+              >
+                <div
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: 6,
+                    background: matrixOn ? theme.accent : "rgba(255,255,255,0.35)",
+                    position: "absolute",
+                    top: 2,
+                    left: matrixOn ? 14 : 2,
+                    transition: "all 0.25s ease",
+                    boxShadow: matrixOn ? `0 0 6px ${theme.accent}` : "none",
+                  }}
+                />
+              </div>
+            )}
           </button>
 
           {/* Mode selector */}
