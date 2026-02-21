@@ -595,6 +595,7 @@ export default function Home() {
           theme={theme}
           mode={mode}
           matrixOn={matrixOn}
+          isMobile={isMobile}
         />
       </div>
     </div>
