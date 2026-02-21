@@ -22,7 +22,7 @@ interface SceneProps {
 function ClearColor({ fog, matrixOn }: { fog: string; matrixOn: boolean }) {
   const { gl } = useThree();
   useEffect(() => {
-    gl.setClearColor(new THREE.Color(fog), matrixOn ? 0.88 : 1);
+    gl.setClearColor(new THREE.Color(fog), matrixOn ? 0.65 : 0.75);
   }, [gl, fog, matrixOn]);
   return null;
 }

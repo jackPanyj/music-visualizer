@@ -78,6 +78,51 @@ body {
   }
 }
 
+@keyframes holoDrift {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translate(10%, -15%) rotate(45deg) scale(1.1);
+  }
+  50% {
+    transform: translate(-5%, 10%) rotate(90deg) scale(0.95);
+  }
+  75% {
+    transform: translate(-15%, -5%) rotate(200deg) scale(1.05);
+  }
+  100% {
+    transform: translate(0%, 0%) rotate(360deg) scale(1);
+  }
+}
+
+@keyframes holoDrift2 {
+  0% {
+    transform: translate(0%, 0%) rotate(0deg) scale(1);
+  }
+  33% {
+    transform: translate(-20%, 10%) rotate(-60deg) scale(1.15);
+  }
+  66% {
+    transform: translate(15%, -10%) rotate(120deg) scale(0.9);
+  }
+  100% {
+    transform: translate(0%, 0%) rotate(360deg) scale(1);
+  }
+}
+
+@keyframes holoDrift3 {
+  0% {
+    transform: translate(5%, -5%) rotate(30deg) scale(1.05);
+  }
+  50% {
+    transform: translate(-10%, 15%) rotate(210deg) scale(0.95);
+  }
+  100% {
+    transform: translate(5%, -5%) rotate(390deg) scale(1.05);
+  }
+}
+
 /* Prevent pull-to-refresh and overscroll on mobile */
 html {
   overscroll-behavior: none;

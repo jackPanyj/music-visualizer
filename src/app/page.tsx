@@ -441,7 +441,31 @@ export default function Home() {
       )}
 
       {/* Canvas area */}
-      <div style={{ flex: 1, position: "relative", minWidth: 0 }}>
+      <div style={{ flex: 1, position: "relative", minWidth: 0, background: "#050510", overflow: "hidden" }}>
+        {/* Holographic aurora overlay — screen blend on top */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 15, overflow: "hidden", pointerEvents: "none", mixBlendMode: "screen" }}>
+          <div style={{
+            position: "absolute", width: "140%", height: "140%", top: "-20%", left: "-20%",
+            background: `radial-gradient(ellipse at 25% 15%, ${theme.accent} 0%, transparent 45%), radial-gradient(ellipse at 75% 85%, ${theme.waveColor} 0%, transparent 45%)`,
+            animation: "holoDrift 20s ease-in-out infinite",
+            filter: "blur(100px)",
+            opacity: 0.25,
+          }} />
+          <div style={{
+            position: "absolute", width: "120%", height: "120%", top: "-10%", left: "-10%",
+            background: `radial-gradient(ellipse at 65% 25%, ${theme.waveColor} 0%, transparent 40%), radial-gradient(ellipse at 15% 75%, ${theme.accent} 0%, transparent 45%)`,
+            animation: "holoDrift2 25s ease-in-out infinite",
+            filter: "blur(120px)",
+            opacity: 0.2,
+          }} />
+          <div style={{
+            position: "absolute", width: "130%", height: "130%", top: "-15%", left: "-15%",
+            background: `radial-gradient(ellipse at 45% 55%, ${theme.waveColor} 0%, transparent 35%), radial-gradient(ellipse at 85% 15%, ${theme.accent} 0%, transparent 40%)`,
+            animation: "holoDrift3 30s ease-in-out infinite",
+            filter: "blur(90px)",
+            opacity: 0.18,
+          }} />
+        </div>
         {/* Mobile: hamburger or mini player */}
         {isMobile && !sidebarOpen && (
           <>
