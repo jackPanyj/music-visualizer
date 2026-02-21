@@ -11,19 +11,11 @@ import MatrixRain from "@/components/MatrixRain";
 const Scene = dynamic(() => import("@/components/Scene"), { ssr: false });
 
 const PRESETS: PresetTrack[] = [
-  { name: "虹 / 菅田将暉 (covered by さとみりょめい)", url: "/music/niji.mp3" },
-  {
-    name: "恋に落ちて / 小林明子 (covered by 里見呂明)",
-    url: "/music/fall-in-love.mp3",
-  },
-  {
-    name: "桜 / 河口恭吾 (covered by 西光寺住職)",
-    url: "/music/sakura.mp3",
-  },
-  {
-    name: "いのちの歌 / 竹内まりや (僧侶ver.)",
-    url: "/music/inochi-no-uta.mp3",
-  },
+  { name: "月半小夜曲 / 李克勤", url: "/music/yueban-xiaoyequ.mp3" },
+  { name: "海阔天空 / Beyond", url: "/music/hai-kuo-tian-kong.mp3" },
+  { name: "富士山下 / 陈奕迅", url: "/music/fu-shi-shan-xia.mp3" },
+  { name: "喜欢你 / Beyond", url: "/music/xi-huan-ni.mp3" },
+  { name: "千千阙歌 / 陈慧娴", url: "/music/qian-qian-que-ge.mp3" },
 ];
 
 // --- Mode Selector (top-right dropdown) ---
