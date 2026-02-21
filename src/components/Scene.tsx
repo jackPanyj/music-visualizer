@@ -39,8 +39,8 @@ export default function Scene({
   return (
     <Canvas
       camera={{
-        position: isMobile ? [0, 7, 15] : [0, 5, 10],
-        fov: isMobile ? 72 : 60,
+        position: isMobile ? [0, 22, 3] : [0, 5, 10],
+        fov: isMobile ? 68 : 60,
       }}
       style={{ width: "100%", height: "100%", position: "relative", zIndex: 1 }}
       gl={{ antialias: true, alpha: true }}

@@ -98,8 +98,11 @@ function PulseSphere({ getFrequencyData, isPlaying, theme }: VisualizerProps) {
     uniform float uMid;
     varying vec3 vNormal;
     varying vec3 vPosition;
+    varying vec3 vWorldPosition;
     varying float vDisplacement;
+    varying float vNoise;
 
+    // Simplex noise
     vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
     vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
@@ -149,17 +152,29 @@ function PulseSphere({ getFrequencyData, isPlaying, theme }: VisualizerProps) {
     }
 
     void main() {
-      vNormal = normal;
+      vNormal = normalize(normalMatrix * normal);
       vPosition = position;
 
-      float noise1 = snoise(position * 2.0 + uTime * 0.5) * uBass * 0.5;
-      float noise2 = snoise(position * 4.0 + uTime * 0.8) * uMid * 0.3;
-      float noise3 = snoise(position * 8.0 + uTime * 1.2) * uBass * 0.15;
+      // Multi-octave smooth noise for organic undulation
+      float slow = uTime * 0.3;
+      float n1 = snoise(position * 1.5 + slow) * 0.6;
+      float n2 = snoise(position * 3.0 + slow * 1.4) * 0.3;
+      float n3 = snoise(position * 6.0 + slow * 2.0) * 0.15;
+      vNoise = n1 + n2;
 
-      float displacement = noise1 + noise2 + noise3;
+      // Audio-reactive displacement: bass = large deformation, mid = detail
+      float bassDisp = n1 * (0.15 + uBass * 0.6);
+      float midDisp = n2 * (0.1 + uMid * 0.4);
+      float detailDisp = n3 * (0.05 + uBass * 0.15);
+
+      float displacement = bassDisp + midDisp + detailDisp;
       vDisplacement = displacement;
 
-      vec3 newPosition = position + normal * displacement;
+      // Subtle breathing scale
+      float breathe = 1.0 + sin(uTime * 0.5) * 0.02 + uBass * 0.08;
+      vec3 newPosition = position * breathe + normal * displacement;
+
+      vWorldPosition = (modelMatrix * vec4(newPosition, 1.0)).xyz;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
     }
   `;
@@ -174,21 +189,38 @@ function PulseSphere({ getFrequencyData, isPlaying, theme }: VisualizerProps) {
     uniform vec3 uColor3;
     varying vec3 vNormal;
     varying vec3 vPosition;
+    varying vec3 vWorldPosition;
     varying float vDisplacement;
+    varying float vNoise;
 
     void main() {
-      float fresnel = pow(1.0 - abs(dot(vNormal, vec3(0.0, 0.0, 1.0))), 2.0);
+      // Gentle fresnel for subtle rim highlight
+      vec3 viewDir = normalize(cameraPosition - vWorldPosition);
+      float fresnel = 1.0 - max(dot(vNormal, viewDir), 0.0);
+      fresnel = pow(fresnel, 4.0);
 
-      float t = sin(uTime * 0.3) * 0.5 + 0.5;
-      vec3 baseColor = mix(uColor1, uColor2, t + uBass * 0.3);
-      baseColor = mix(baseColor, uColor3, fresnel * 0.6 + uHigh * 0.3);
+      // Smooth flowing color based on position + noise + time (view-independent)
+      float flow = vNoise + uTime * 0.1;
+      float blend1 = sin(flow * 2.0 + vPosition.x) * 0.5 + 0.5;
+      float blend2 = cos(flow * 1.5 + vPosition.z) * 0.5 + 0.5;
 
-      float glow = fresnel * (1.0 + uBass * 2.0);
-      vec3 finalColor = baseColor + glow * uColor1;
+      // Uniform three-way color mix across the surface
+      vec3 baseColor = mix(uColor1, uColor2, blend1);
+      baseColor = mix(baseColor, uColor3, blend2 * 0.4 + uHigh * 0.2);
 
-      finalColor += abs(vDisplacement) * mix(uColor1, uColor2, 0.5);
+      // Soft rim glow (very subtle)
+      vec3 rimColor = uColor3 * fresnel * (0.3 + uBass * 0.3);
 
-      gl_FragColor = vec4(finalColor, 0.9);
+      // Displacement highlights
+      float ridgeHighlight = smoothstep(0.0, 0.3, abs(vDisplacement)) * 0.12;
+      vec3 ridgeColor = mix(uColor2, uColor3, 0.5) * ridgeHighlight;
+
+      vec3 finalColor = baseColor * 0.45 + rimColor + ridgeColor;
+
+      // Uniform transparency with subtle rim fade
+      float alpha = 0.4 + fresnel * 0.15 + uBass * 0.1;
+
+      gl_FragColor = vec4(finalColor, alpha);
     }
   `;
 
@@ -229,13 +261,15 @@ function PulseSphere({ getFrequencyData, isPlaying, theme }: VisualizerProps) {
       mat.uniforms.uHigh.value *= 0.95;
     }
 
-    mesh.rotation.y = t * 0.15;
-    mesh.rotation.x = Math.sin(t * 0.1) * 0.2;
+    // Gentle tumble rotation
+    mesh.rotation.y = t * 0.12;
+    mesh.rotation.x = Math.sin(t * 0.08) * 0.15;
+    mesh.rotation.z = Math.cos(t * 0.06) * 0.1;
   });
 
   return (
     <mesh ref={meshRef}>
-      <icosahedronGeometry args={[1.8, 64]} />
+      <icosahedronGeometry args={[1.8, 128]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={vertexShader}
